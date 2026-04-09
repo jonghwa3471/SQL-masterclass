@@ -1,67 +1,23 @@
 import sqlite3
 
-connection = sqlite3.connect("users.db")
+conn = sqlite3.connect("movies_download.db")
 
-cursor = connection.cursor()
+cur = conn.cursor()
 
+res = cur.execute(
+    "SELECT movie_id, title FROM movies ORDER BY movie_id"
+)  # 여기서 선택된 데이터들은 아직 내 파이썬 프로그램에(메모리에) 로드된 것이 아니다.
 
-def init_table():
-    cursor.execute(
-        """
-    CREATE TABLE users (
-        user_id integer primary key autoincrement,
-        username text not null,
-        password text not null
-    );
-    """
-    )
-    cursor.execute(
-        """
-        insert into users (username, password) 
-        values ('nico', 123), ('lynn', 321);
-    """
-    )
+# all_movies = res.fetchall()  # 여기서 fetchall을 해야 실제로 로드가 된 것이다.
 
+print(res.fetchmany(20))
 
-def print_all_users():
-    result = cursor.execute("select * from users;")
-    data = result.fetchall()
-    print(data)
+print(res.fetchone(), res.fetchone(), res.fetchone())
 
+for movie in res:
+    print(
+        movie
+    )  # 순환하면서 모든 영화들을 가져오지만, fetchall처럼 한 번에 메모리에 로드하지는 않아서, 부담이 적다.
 
-def i_change_password(username, new_password):
-    cursor.execute(
-        f"UPDATE users SET password = '{new_password}' WHERE username = '{username}'"
-    )
-
-
-def s_change_password(username, new_password):
-    cursor.execute(
-        "UPDATE users SET password = ? WHERE username = ?", (new_password, username)
-    )
-
-
-data = [
-    ("lannna", 567),
-    ("bora", 123),
-    ("max", 123),
-    ("jja", 898),
-]
-
-# cursor.executemany("INSERT INTO users (username, password) VALUES (?, ?)", data)
-
-
-data = [
-    {"name": "lannna", "password": 567},
-    {"name": "bora", "password": 123},
-    {"name": "max", "password": 123},
-    {"name": "jja", "password": 898},
-]
-
-cursor.executemany(
-    "INSERT INTO users (username, password) VALUES (:name, :password)", data
-)
-print_all_users()
-
-connection.commit()
-connection.close()
+conn.commit()
+conn.close()
