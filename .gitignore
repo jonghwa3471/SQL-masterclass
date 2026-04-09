@@ -1,0 +1,11 @@
+# Ignore database files
+movies_download.db
+
+# Ignore backup files
+pg_backup
+
+# Ignore JSON data files
+movies-data.json
+
+# Ignore virtual environment
+.venv/
