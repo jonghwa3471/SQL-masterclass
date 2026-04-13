@@ -9,3 +9,5 @@ movies-data.json
 
 # Ignore virtual environment
 .venv/
+
+node_modules/
